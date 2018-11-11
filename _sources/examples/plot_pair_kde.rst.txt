@@ -1,0 +1,15 @@
+
+.. _plot_pair_kde:
+
+
+KDE Pair Plot
+=============
+
+
+
+.. image:: _images/plot_pair_kde.png
+
+**Python source code:** :download:`[download source: plot_pair_kde.py]<plot_pair_kde.py>`
+
+.. literalinclude:: plot_pair_kde.py
+    :lines: 7-

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>API Reference &#8212; ArviZ 0.2.1 documentation</title>
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="arviz.plot_autocorr" href="generated/arviz.plot_autocorr.html" />
+    <link rel="prev" title="Inference Data Cookbook" href="notebooks/InferenceDataCookbook.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html"><span><img src="_static/logo.png"></span>
+           </a>
+        <span class="navbar-text navbar-version pull-left"><b>0.2.1</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="examples/index.html">Gallery</a></li>
+                <li><a href="notebooks/Introduction.html">Quickstart</a></li>
+                <li><a href="notebooks/InferenceDataCookbook.html">Cookbook</a></li>
+                <li><a href="#">API</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="notebooks/Introduction.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/index.html">Example Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/InferenceDataCookbook.html">Cookbook</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="about.html">About</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 content">
+      
+  <div class="section" id="api-reference">
+<span id="api"></span><h1>API Reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="plots">
+<span id="plot-api"></span><h2>Plots<a class="headerlink" href="#plots" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/arviz.plot_autocorr.html#arviz.plot_autocorr" title="arviz.plot_autocorr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_autocorr</span></code></a>(data[,&nbsp;var_names,&nbsp;max_lag,&nbsp;…])</td>
+<td>Bar plot of the autocorrelation function for a sequence of data.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/arviz.plot_compare.html#arviz.plot_compare" title="arviz.plot_compare"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_compare</span></code></a>(comp_df[,&nbsp;insample_dev,&nbsp;…])</td>
+<td>Summary plot for model comparison.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/arviz.plot_density.html#arviz.plot_density" title="arviz.plot_density"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_density</span></code></a>(data[,&nbsp;data_labels,&nbsp;var_names,&nbsp;…])</td>
+<td>Generate KDE plots for continuous variables and histograms for discrete ones.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/arviz.plot_energy.html#arviz.plot_energy" title="arviz.plot_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_energy</span></code></a>(data[,&nbsp;kind,&nbsp;bfmi,&nbsp;figsize,&nbsp;…])</td>
+<td>Plot energy transition distribution and marginal energy distribution in HMC algorithms.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/arviz.plot_forest.html#arviz.plot_forest" title="arviz.plot_forest"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_forest</span></code></a>(data[,&nbsp;kind,&nbsp;model_names,&nbsp;…])</td>
+<td>Forest plot to compare credible intervals from a number of distributions.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/arviz.plot_kde.html#arviz.plot_kde" title="arviz.plot_kde"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_kde</span></code></a>(values[,&nbsp;values2,&nbsp;cumulative,&nbsp;rug,&nbsp;…])</td>
+<td>1D or 2D KDE plot taking into account boundary conditions.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/arviz.plot_parallel.html#arviz.plot_parallel" title="arviz.plot_parallel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_parallel</span></code></a>(data[,&nbsp;var_names,&nbsp;coords,&nbsp;…])</td>
+<td>Plot parallel coordinates plot showing posterior points with and without divergences.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/arviz.plot_posterior.html#arviz.plot_posterior" title="arviz.plot_posterior"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_posterior</span></code></a>(data[,&nbsp;var_names,&nbsp;coords,&nbsp;…])</td>
+<td>Plot Posterior densities in the style of John K.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/arviz.plot_trace.html#arviz.plot_trace" title="arviz.plot_trace"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_trace</span></code></a>(data[,&nbsp;var_names,&nbsp;coords,&nbsp;…])</td>
+<td>Plot samples histograms and values.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/arviz.plot_pair.html#arviz.plot_pair" title="arviz.plot_pair"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_pair</span></code></a>(data[,&nbsp;var_names,&nbsp;coords,&nbsp;…])</td>
+<td>Plot a scatter or hexbin matrix of the sampled parameters.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/arviz.plot_joint.html#arviz.plot_joint" title="arviz.plot_joint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_joint</span></code></a>(data[,&nbsp;var_names,&nbsp;coords,&nbsp;…])</td>
+<td>Plot a scatter or hexbin of two variables with their respective marginals distributions.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/arviz.plot_khat.html#arviz.plot_khat" title="arviz.plot_khat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_khat</span></code></a>(khats[,&nbsp;figsize,&nbsp;textsize,&nbsp;…])</td>
+<td>Plot Pareto tail indices.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/arviz.plot_ppc.html#arviz.plot_ppc" title="arviz.plot_ppc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_ppc</span></code></a>(data[,&nbsp;kind,&nbsp;alpha,&nbsp;mean,&nbsp;figsize,&nbsp;…])</td>
+<td>Plot for Posterior Predictive checks.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="stats">
+<span id="stats-api"></span><h2>Stats<a class="headerlink" href="#stats" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/arviz.bfmi.html#arviz.bfmi" title="arviz.bfmi"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bfmi</span></code></a>(energy)</td>
+<td>Calculate the estimated Bayesian fraction of missing information (BFMI).</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/arviz.compare.html#arviz.compare" title="arviz.compare"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compare</span></code></a>(dataset_dict[,&nbsp;ic,&nbsp;method,&nbsp;…])</td>
+<td>Compare models based on WAIC or LOO cross validation.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/arviz.hpd.html#arviz.hpd" title="arviz.hpd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hpd</span></code></a>(x[,&nbsp;credible_interval,&nbsp;smooth,&nbsp;…])</td>
+<td>Calculate highest posterior density (HPD) of array for given credible_interval.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/arviz.loo.html#arviz.loo" title="arviz.loo"><code class="xref py py-obj docutils literal notranslate"><span class="pre">loo</span></code></a>(data[,&nbsp;pointwise,&nbsp;reff])</td>
+<td>Pareto-smoothed importance sampling leave-one-out cross-validation.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/arviz.r2_score.html#arviz.r2_score" title="arviz.r2_score"><code class="xref py py-obj docutils literal notranslate"><span class="pre">r2_score</span></code></a>(y_true,&nbsp;y_pred)</td>
+<td>R² for Bayesian regression models.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/arviz.summary.html#arviz.summary" title="arviz.summary"><code class="xref py py-obj docutils literal notranslate"><span class="pre">summary</span></code></a>(data[,&nbsp;var_names,&nbsp;fmt,&nbsp;round_to,&nbsp;…])</td>
+<td>Create a data frame with summary statistics.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/arviz.waic.html#arviz.waic" title="arviz.waic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">waic</span></code></a>(data[,&nbsp;pointwise])</td>
+<td>Calculate the widely available information criterion.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/arviz.psislw.html#arviz.psislw" title="arviz.psislw"><code class="xref py py-obj docutils literal notranslate"><span class="pre">psislw</span></code></a>(log_weights[,&nbsp;reff])</td>
+<td>Pareto smoothed importance sampling (PSIS).</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="diagnostics">
+<span id="diagnostics-api"></span><h2>Diagnostics<a class="headerlink" href="#diagnostics" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/arviz.effective_n.html#arviz.effective_n" title="arviz.effective_n"><code class="xref py py-obj docutils literal notranslate"><span class="pre">effective_n</span></code></a>(data,&nbsp;*[,&nbsp;var_names])</td>
+<td>Calculate estimate of the effective sample size.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/arviz.gelman_rubin.html#arviz.gelman_rubin" title="arviz.gelman_rubin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">gelman_rubin</span></code></a>(data[,&nbsp;var_names])</td>
+<td>Compute estimate of R-hat for a set of traces.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/arviz.geweke.html#arviz.geweke" title="arviz.geweke"><code class="xref py py-obj docutils literal notranslate"><span class="pre">geweke</span></code></a>(values[,&nbsp;first,&nbsp;last,&nbsp;intervals])</td>
+<td>Compute z-scores for convergence diagnostics.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="data">
+<h2>Data<a class="headerlink" href="#data" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/arviz.convert_to_inference_data.html#arviz.convert_to_inference_data" title="arviz.convert_to_inference_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_to_inference_data</span></code></a>(obj,&nbsp;*[,&nbsp;group,&nbsp;…])</td>
+<td>Convert a supported object to an InferenceData object.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/arviz.load_arviz_data.html#arviz.load_arviz_data" title="arviz.load_arviz_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_arviz_data</span></code></a>([dataset,&nbsp;data_home])</td>
+<td>Load a local or remote pre-made dataset.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/arviz.from_pystan.html#arviz.from_pystan" title="arviz.from_pystan"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_pystan</span></code></a>(*[,&nbsp;posterior,&nbsp;…])</td>
+<td>Convert PyStan data into an InferenceData object.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/arviz.from_pymc3.html#arviz.from_pymc3" title="arviz.from_pymc3"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_pymc3</span></code></a>(*[,&nbsp;trace,&nbsp;prior,&nbsp;…])</td>
+<td>Convert pymc3 data into an InferenceData object.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/arviz.from_emcee.html#arviz.from_emcee" title="arviz.from_emcee"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_emcee</span></code></a>(sampler,&nbsp;*[,&nbsp;var_names,&nbsp;…])</td>
+<td>Convert emcee data into an InferenceData object.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/arviz.from_cmdstan.html#arviz.from_cmdstan" title="arviz.from_cmdstan"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_cmdstan</span></code></a>(*[,&nbsp;posterior,&nbsp;…])</td>
+<td>Convert CmdStan data into an InferenceData object.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/arviz.from_pyro.html#arviz.from_pyro" title="arviz.from_pyro"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_pyro</span></code></a>(posterior,&nbsp;*[,&nbsp;coords,&nbsp;dims])</td>
+<td>Convert pyro data into an InferenceData object.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+<div id="sourcelink">
+  <a href="_sources/api.rst.txt"
+     rel="nofollow">Source</a>
+</div>
+      
+    </p>
+    <p>
+        &copy; Copyright 2018, ArviZ devs.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.1.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

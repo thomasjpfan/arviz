@@ -1,0 +1,15 @@
+
+.. _plot_autocorr:
+
+
+Autocorrelation Plot
+====================
+
+
+
+.. image:: _images/plot_autocorr.png
+
+**Python source code:** :download:`[download source: plot_autocorr.py]<plot_autocorr.py>`
+
+.. literalinclude:: plot_autocorr.py
+    :lines: 7-

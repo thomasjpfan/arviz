@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>arviz.convert_to_inference_data &#8212; ArviZ 0.2.1 documentation</title>
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="arviz.load_arviz_data" href="arviz.load_arviz_data.html" />
+    <link rel="prev" title="arviz.geweke" href="arviz.geweke.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html"><span><img src="../_static/logo.png"></span>
+           </a>
+        <span class="navbar-text navbar-version pull-left"><b>0.2.1</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../examples/index.html">Gallery</a></li>
+                <li><a href="../notebooks/Introduction.html">Quickstart</a></li>
+                <li><a href="../notebooks/InferenceDataCookbook.html">Cookbook</a></li>
+                <li><a href="../api.html">API</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/Introduction.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Example Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/InferenceDataCookbook.html">Cookbook</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 content">
+      
+  <div class="section" id="arviz-convert-to-inference-data">
+<h1>arviz.convert_to_inference_data<a class="headerlink" href="#arviz-convert-to-inference-data" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="arviz.convert_to_inference_data">
+<code class="descclassname">arviz.</code><code class="descname">convert_to_inference_data</code><span class="sig-paren">(</span><em>obj</em>, <em>*</em>, <em>group='posterior'</em>, <em>coords=None</em>, <em>dims=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/arviz/data/converters.html#convert_to_inference_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#arviz.convert_to_inference_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a supported object to an InferenceData object.</p>
+<p>This function sends <cite>obj</cite> to the right conversion function. It is idempotent,
+in that it will return arviz.InferenceData objects unchanged.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>obj</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict, str, np.ndarray, xr.Dataset, pystan fit, pymc3 trace</span></dt>
+<dd><dl class="first last docutils">
+<dt>A supported object to convert to InferenceData:</dt>
+<dd><div class="first last line-block">
+<div class="line">InferenceData: returns unchanged</div>
+<div class="line">str: Attempts to load the netcdf dataset from disk</div>
+<div class="line">pystan fit: Automatically extracts data</div>
+<div class="line">pymc3 trace: Automatically extracts data</div>
+<div class="line">emcee sampler: Automatically extracts data</div>
+<div class="line">pyro MCMC: Automatically extracts data</div>
+<div class="line">xarray.Dataset: adds to InferenceData as only group</div>
+<div class="line">dict: creates an xarray dataset as the only group</div>
+<div class="line">numpy array: creates an xarray dataset as the only group, gives the
+array an arbitrary name</div>
+</div>
+</dd>
+</dl>
+</dd>
+<dt><strong>group</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">If <cite>obj</cite> is a dict or numpy array, assigns the resulting xarray
+dataset to this group. Default: “posterior”.</p>
+</dd>
+<dt><strong>coords</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict[str, iterable]</span></dt>
+<dd><p class="first last">A dictionary containing the values that are used as index. The key
+is the name of the dimension, the values are the index values.</p>
+</dd>
+<dt><strong>dims</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict[str, List(str)]</span></dt>
+<dd><p class="first last">A mapping from variables to a list of coordinate names for the variable</p>
+</dd>
+<dt><strong>kwargs</strong></dt>
+<dd><p class="first last">Rest of the supported keyword arguments transferred to conversion function.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>InferenceData</strong></dt>
+<dd></dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+<div id="sourcelink">
+  <a href="../_sources/generated/arviz.convert_to_inference_data.rst.txt"
+     rel="nofollow">Source</a>
+</div>
+      
+    </p>
+    <p>
+        &copy; Copyright 2018, ArviZ devs.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.1.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

@@ -1,0 +1,15 @@
+
+.. _plot_pair_hex:
+
+
+Hexbin PairPlot
+===============
+
+
+
+.. image:: _images/plot_pair_hex.png
+
+**Python source code:** :download:`[download source: plot_pair_hex.py]<plot_pair_hex.py>`
+
+.. literalinclude:: plot_pair_hex.py
+    :lines: 7-

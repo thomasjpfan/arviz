@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Introduction to xarray for ArviZ &#8212; ArviZ 0.2.1 documentation</title>
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html"><span><img src="../_static/logo.png"></span>
+           </a>
+        <span class="navbar-text navbar-version pull-left"><b>0.2.1</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../examples/index.html">Gallery</a></li>
+                <li><a href="Introduction.html">Quickstart</a></li>
+                <li><a href="InferenceDataCookbook.html">Cookbook</a></li>
+                <li><a href="../api.html">API</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="Introduction.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Example Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="InferenceDataCookbook.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 content">
+      
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput,
+div.nbinput div.prompt,
+div.nbinput div.input_area,
+div.nbinput div[class*=highlight],
+div.nbinput div[class*=highlight] pre,
+div.nboutput,
+div.nbinput div.prompt,
+div.nbinput div.output_area,
+div.nboutput div[class*=highlight],
+div.nboutput div[class*=highlight] pre {
+    background: none;
+    border: none;
+    padding: 0 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+/* avoid gaps between output lines */
+div.nboutput div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput,
+div.nboutput {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput,
+    div.nboutput {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput div.prompt pre {
+    color: #303F9F;
+}
+
+/* output prompt */
+div.nboutput div.prompt pre {
+    color: #D84315;
+}
+
+/* all prompts */
+div.nbinput div.prompt,
+div.nboutput div.prompt {
+    min-width: 9ex;
+    padding-top: 0.4em;
+    padding-right: 0.4em;
+    text-align: right;
+    flex: 0;
+}
+@media (max-width: 540px) {
+    div.nbinput div.prompt,
+    div.nboutput div.prompt {
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput div.prompt.empty {
+        padding: 0;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput div.prompt pre,
+div.nboutput div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput div.input_area,
+div.nboutput div.output_area {
+    padding: 0.4em;
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput div.input_area,
+    div.nboutput div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput div.input_area {
+    border: 1px solid #cfcfcf;
+    border-radius: 2px;
+    background: #f7f7f7;
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.pngmath center alignment in output cells */
+div.nboutput div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+</style>
+<div class="section" id="Introduction-to-xarray-for-ArviZ">
+<h1>Introduction to xarray for ArviZ<a class="headerlink" href="#Introduction-to-xarray-for-ArviZ" title="Permalink to this headline">¶</a></h1>
+<p>While ArviZ supports plotting from familiar datatypes, such as
+dictionaries and numpy arrays, there are a couple data structures
+central to ArviZ that are useful to know when using the library.</p>
+<p>They are * xarray.Dataset * arviz.InferenceData * NetCDF</p>
+<div class="section" id="Why-more-than-one-data-structure?">
+<h2>Why more than one data structure?<a class="headerlink" href="#Why-more-than-one-data-structure?" title="Permalink to this headline">¶</a></h2>
+<p>Bayesian Inference generates numerous datasets that represent different
+aspects of the model. For example in a single analysis a Bayesian
+practioner could end up with any of the following data. * Prior
+Distribution for N number of variables * Posterior Distribution for N
+number of variables * Prior Predictive Distribution * Posterior
+Predictive Distribution * Trace data for each of the above * Sample
+statistics for each inference run * Whatever else</p>
+</div>
+<div class="section" id="Why-not-Pandas-Dataframes-or-Numpy-Arrays?">
+<h2>Why not Pandas Dataframes or Numpy Arrays?<a class="headerlink" href="#Why-not-Pandas-Dataframes-or-Numpy-Arrays?" title="Permalink to this headline">¶</a></h2>
+<p>Data from probabilistic programming is naturally high dimensional. To
+add to the complexity ArviZ must handle the data generated from multiple
+Bayesian Modeling libraries, such as pymc3 and pystan. This is an
+application that the <em>xarray</em> package handles quite well. The xarray
+package lets users manage high dimensional data with human readable
+dimensions and coordinates quite easily.</p>
+<p>Although seemingly more complex at a glance the Arviz devs believe that
+the usage of <em>xarray</em>, <em>InferenceData</em>, and <em>NetCDF</em> will simplify the
+handling, referencing, and serialization of data generated by MCMC runs.</p>
+</div>
+<div class="section" id="An-introduction-to-each">
+<h2>An introduction to each<a class="headerlink" href="#An-introduction-to-each" title="Permalink to this headline">¶</a></h2>
+<p>To help get familiar with each, ArviZ includes some toy datasets. To
+start an <code class="docutils literal notranslate"><span class="pre">az.InferenceData</span></code> sample can be loaded from disk.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
+<span></span>In [1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Load the centered eight schools model</span>
+<span class="kn">import</span> <span class="nn">arviz</span> <span class="kn">as</span> <span class="nn">az</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">az</span><span class="o">.</span><span class="n">load_arviz_data</span><span class="p">(</span><span class="s1">&#39;centered_eight&#39;</span><span class="p">)</span>
+<span class="n">data</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+/home/ArviZUser/miniconda3/envs/arviz/lib/python3.6/importlib/_bootstrap.py:219: RuntimeWarning: numpy.dtype size changed, may indicate binary incompatibility. Expected 96, got 88
+  return f(*args, **kwds)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
+<span></span>Out[1]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>Inference data with groups:
+    &gt; posterior
+    &gt; sample_stats
+    &gt; posterior_predictive
+    &gt; prior
+    &gt; observed_data
+</pre></div>
+</div>
+</div>
+<p>In this case the <code class="docutils literal notranslate"><span class="pre">az.InferenceData</span></code> object contains both a posterior
+predictive distribution and the observed data, among other datasets.
+Each group in InferenceData is both an attribute on <code class="docutils literal notranslate"><span class="pre">InferenceData</span></code>
+and itself a <code class="docutils literal notranslate"><span class="pre">xarray.Dataset</span></code> object.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
+<span></span>In [2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Get the posterior Dataset</span>
+<span class="n">posterior</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">posterior</span>
+<span class="n">posterior</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
+<span></span>Out[2]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>&lt;xarray.Dataset&gt;
+Dimensions:  (chain: 4, draw: 500, school: 8)
+Coordinates:
+  * chain    (chain) int64 0 1 2 3
+  * draw     (draw) int64 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 ...
+  * school   (school) object &#39;Choate&#39; &#39;Deerfield&#39; &#39;Phillips Andover&#39; ...
+Data variables:
+    mu       (chain, draw) float64 ...
+    theta    (chain, draw, school) float64 ...
+    tau      (chain, draw) float64 ...
+</pre></div>
+</div>
+</div>
+<p>In our eight schools example the posterior trace consists of 3
+variables, estimated over 4 chains. In addition this model is a
+hierachial modes where values for the variable <code class="docutils literal notranslate"><span class="pre">theta</span></code> are associated
+with a particular school.</p>
+<p>In xarray’s terminology, data variables are the actual values generated
+from the MCMC draws, Dimensions are the axes on which refer to the data
+variables and coordinates which are pointers to specific slices or
+points in the <code class="docutils literal notranslate"><span class="pre">xarray.Dataset</span></code></p>
+<p>Observed data from the Eight Schools model can be accessed through the
+same method.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
+<span></span>In [3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Get the observed xarray</span>
+<span class="n">observed_data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">observed_data</span>
+<span class="n">observed_data</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
+<span></span>Out[3]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>&lt;xarray.Dataset&gt;
+Dimensions:  (school: 8)
+Coordinates:
+  * school   (school) object &#39;Choate&#39; &#39;Deerfield&#39; &#39;Phillips Andover&#39; ...
+Data variables:
+    obs      (school) float64 ...
+</pre></div>
+</div>
+</div>
+<p>It should be noted that the observed dataset contains only 8 data
+variables and doesn’t have a chain and draw dimension or coordinates
+unlike posterior. This difference in sizes is the motivating reason
+behind <em>InferenceData</em>. Rather than force multiple different sized
+arrays into one array, or force users to manage multiple objects
+corresponding to different datasets, it is easier to hold references to
+each <em>xarray.Dataset</em> in an <em>InferenceData</em> object.</p>
+</div>
+<div class="section" id="NetCDF">
+<h2>NetCDF<a class="headerlink" href="#NetCDF" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://www.unidata.ucar.edu/software/netcdf/">NetCDF</a> is a standard
+for referencing array oriented files. In other words while,
+<em>xarray.Dataset</em>s, and by extension <em>InferenceData</em>, are convenient
+for accessing arrays in Python memory, <em>NetCDF</em> provides a convenient
+mechanism for persistence of model data on disk. In fact the NetCDF
+dataset was the inspiration between <em>InferenceData</em> as NetCDF4 supports
+the concepts of groups. <em>InferenceData</em> merely wraps xarray.Dataset with
+the same functionality,</p>
+<p>Most users will not have to concern themselves with the <em>NetCDF</em>
+standard but for completeness it is good to make its usage transparent.
+It is also worth noting that the NetCDF4 file standard is interoperable
+with HDF5 which may be familiar from other contexts.</p>
+<p>Earlier in this tutorial <em>InferenceData</em> was loaded from a <em>NetCDF</em> file</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
+<span></span>In [4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">data</span> <span class="o">=</span> <span class="n">az</span><span class="o">.</span><span class="n">load_arviz_data</span><span class="p">(</span><span class="s1">&#39;centered_eight&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Similarly the <em>InferenceData</em> objects can be persisted tp disk in the
+NetCDF format</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
+<span></span>In [5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">data</span><span class="o">.</span><span class="n">to_netcdf</span><span class="p">(</span><span class="s2">&quot;eight_schools_model.nc&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre>
+<span></span>Out[5]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>&#39;eight_schools_model.nc&#39;
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="Additional-Reading">
+<h1>Additional Reading<a class="headerlink" href="#Additional-Reading" title="Permalink to this headline">¶</a></h1>
+<p>Additional documentation and tutorials exist for xarray and netcdf4.</p>
+<div class="section" id="xarray">
+<h2>xarray<a class="headerlink" href="#xarray" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference external" href="http://xarray.pydata.org/en/stable/why-xarray.html">xarray
+documentation</a></li>
+<li><a class="reference external" href="https://www.youtube.com/watch?v=X0pAhJgySxk&amp;t=949s">xarray lightning talk at scipy
+2015</a></li>
+</ul>
+</div>
+<div class="section" id="NetCDF">
+<h2>NetCDF<a class="headerlink" href="#NetCDF" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference external" href="http://unidata.github.io/netcdf4-python/">NetCDF documentation</a></li>
+<li><a class="reference external" href="http://xarray.pydata.org/en/stable/io.html#netcdf">NetCDF usage in
+xarray</a></li>
+<li><a class="reference external" href="https://www.unidata.ucar.edu/software/netcdf/docs/interoperability_hdf5.html">NetCDF interoperability with
+HDF5</a></li>
+</ul>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+<div id="sourcelink">
+  <a href="../_sources/notebooks/XarrayforArviZ.ipynb.txt"
+     rel="nofollow">Source</a>
+</div>
+      
+    </p>
+    <p>
+        &copy; Copyright 2018, ArviZ devs.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.1.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

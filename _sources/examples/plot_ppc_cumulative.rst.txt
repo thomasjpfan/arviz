@@ -1,0 +1,15 @@
+
+.. _plot_ppc_cumulative:
+
+
+Posterior Predictive Check Cumulative Plot
+==========================================
+
+
+
+.. image:: _images/plot_ppc_cumulative.png
+
+**Python source code:** :download:`[download source: plot_ppc_cumulative.py]<plot_ppc_cumulative.py>`
+
+.. literalinclude:: plot_ppc_cumulative.py
+    :lines: 7-

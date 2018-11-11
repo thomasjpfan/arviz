@@ -1,0 +1,15 @@
+
+.. _plot_posterior:
+
+
+Posterior Plot
+==============
+
+
+
+.. image:: _images/plot_posterior.png
+
+**Python source code:** :download:`[download source: plot_posterior.py]<plot_posterior.py>`
+
+.. literalinclude:: plot_posterior.py
+    :lines: 7-

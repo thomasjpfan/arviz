@@ -1,0 +1,15 @@
+
+.. _plot_kde:
+
+
+KDE Plot
+========
+
+
+
+.. image:: _images/plot_kde.png
+
+**Python source code:** :download:`[download source: plot_kde.py]<plot_kde.py>`
+
+.. literalinclude:: plot_kde.py
+    :lines: 7-

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Arviz Roadmap &#8212; ArviZ 0.2.1 documentation</title>
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html"><span><img src="_static/logo.png"></span>
+           </a>
+        <span class="navbar-text navbar-version pull-left"><b>0.2.1</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="examples/index.html">Gallery</a></li>
+                <li><a href="notebooks/Introduction.html">Quickstart</a></li>
+                <li><a href="notebooks/InferenceDataCookbook.html">Cookbook</a></li>
+                <li><a href="api.html">API</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/Introduction.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/index.html">Example Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/InferenceDataCookbook.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="about.html">About</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 content">
+      
+  <div class="section" id="arviz-roadmap">
+<h1>Arviz Roadmap<a class="headerlink" href="#arviz-roadmap" title="Permalink to this headline">¶</a></h1>
+<p><em>August 1, 2018</em></p>
+<p>This is super preliminary and reflects thoughts on what needs to be done
+to get to a stable release.</p>
+<div class="section" id="road-to-v1-0">
+<h2>Road to v1.0<a class="headerlink" href="#road-to-v1-0" title="Permalink to this headline">¶</a></h2>
+<p>I would guess that this all takes 2-6 months to do, though as an open source
+project this can vary quite a bit (and <em>you</em> can speed this up). The initial PyPI
+release may be quite unstable, but will allow faster iteration as PyStan
+and PyMC3 are able to start developing with it. The initial goal here is
+to support at least those two libraries, while remaining general enough
+to support other probabilistic programming libraries in the future.</p>
+<ul class="simple">
+<li>Convert plots to xarray<ul>
+<li><code class="docutils literal notranslate"><span class="pre">violintraceplot</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">posteriorplot</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">parallelplot</span></code><ul>
+<li>Requires divergences to be useful</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">pairplot</span></code><ul>
+<li>Looks a lot nicer with divergences</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">energyplot</span></code><ul>
+<li>Requires sampler statistics</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Convert stats to xarray<ul>
+<li>Maybe implementing these directly in <code class="docutils literal notranslate"><span class="pre">numpy</span></code> instead, allowing
+PyMC3/PyStan to use them without going through <code class="docutils literal notranslate"><span class="pre">xarray</span></code>?</li>
+<li>I haven’t looked closely enough at these to know which need more than
+a posterior</li>
+</ul>
+</li>
+<li>Integrate into PyMC3<ul>
+<li>Will require a release of <code class="docutils literal notranslate"><span class="pre">arviz</span></code> on pypi</li>
+</ul>
+</li>
+<li>Initial strategy will probably be making <code class="docutils literal notranslate"><span class="pre">arviz</span></code> flexible enough
+that <code class="docutils literal notranslate"><span class="pre">pymc3</span></code> can edit the plots as desired (but try to keep code on
+<code class="docutils literal notranslate"><span class="pre">pymc3</span></code> side to handling styles, and not data)</li>
+<li>Integrate with PyStan<ul>
+<li>Similar to above, though will remain separate.</li>
+<li>Perhaps add <code class="docutils literal notranslate"><span class="pre">stan</span></code> and <code class="docutils literal notranslate"><span class="pre">pymc3</span></code> stylesheets
+directly into ArviZ?</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="longer-term">
+<h2>Longer term<a class="headerlink" href="#longer-term" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Support full netcdf data schema<ul>
+<li>A standard, useful data format for probabilistic programming is
+<em>very</em> interesting</li>
+<li>We have three libraries (pystan, pymc3, pymc4) with three different
+inference backends (C++ templates, theano, tensorflow) that are used
+in industry and academia that are interested in using this, which is
+a great test suite</li>
+<li>In some of the plots we are not very careful about memory efficiency,
+but a benefit of xarray is being able to lazily read data from disk</li>
+</ul>
+</li>
+<li>My impression is that <code class="docutils literal notranslate"><span class="pre">/divergences</span></code> and <code class="docutils literal notranslate"><span class="pre">/sampler_statistics</span></code>
+would be the next two datasets to support</li>
+<li>Other backends? [MOSTLY REJECTED: Let’s focus on matplotlib for now!]<ul>
+<li><code class="docutils literal notranslate"><span class="pre">altair</span></code><ul>
+<li>Very modular, interactive, easy sharing via the web</li>
+<li>Supporting xarray <a class="reference external" href="https://github.com/altair-viz/altair/issues/891">on their radar</a></li>
+<li>Would require a pretty complete rewrite</li>
+<li><dl class="first docutils">
+<dt>Right now only supports up to 5,000 points in an underlying</dt>
+<dd>dataset, which <em>most</em> traces come up against (there’s talk about
+using a netcdf backend which could help)</dd>
+</dl>
+</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">bokeh</span></code><ul>
+<li>Also works on web</li>
+<li><em>Not as familiar with pros/cons here</em></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Reach out to other libraries that may be interested</li>
+<li>Should even automatically support other languages through <code class="docutils literal notranslate"><span class="pre">netCDF</span></code>. Would be
+interesting to get an example from <code class="docutils literal notranslate"><span class="pre">rstan</span></code> into <code class="docutils literal notranslate"><span class="pre">netCDF</span></code> and then into ArviZ!</li>
+</ul>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+<div id="sourcelink">
+  <a href="_sources/roadmap.rst.txt"
+     rel="nofollow">Source</a>
+</div>
+      
+    </p>
+    <p>
+        &copy; Copyright 2018, ArviZ devs.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.1.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

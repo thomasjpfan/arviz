@@ -1,0 +1,6 @@
+arviz.gelman\_rubin
+===================
+
+.. currentmodule:: arviz
+
+.. autofunction:: gelman_rubin

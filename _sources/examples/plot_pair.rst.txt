@@ -1,0 +1,15 @@
+
+.. _plot_pair:
+
+
+Pair Plot
+=========
+
+
+
+.. image:: _images/plot_pair.png
+
+**Python source code:** :download:`[download source: plot_pair.py]<plot_pair.py>`
+
+.. literalinclude:: plot_pair.py
+    :lines: 7-

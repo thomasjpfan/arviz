@@ -1,0 +1,15 @@
+
+.. _plot_forest_ridge:
+
+
+Ridgeplot
+=========
+
+
+
+.. image:: _images/plot_forest_ridge.png
+
+**Python source code:** :download:`[download source: plot_forest_ridge.py]<plot_forest_ridge.py>`
+
+.. literalinclude:: plot_forest_ridge.py
+    :lines: 7-

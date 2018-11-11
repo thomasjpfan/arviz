@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>arviz.stats.diagnostics &#8212; ArviZ 0.2.1 documentation</title>
+    <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="author" title="About these documents" href="../../../about.html" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../../index.html"><span><img src="../../../_static/logo.png"></span>
+           </a>
+        <span class="navbar-text navbar-version pull-left"><b>0.2.1</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../../../examples/index.html">Gallery</a></li>
+                <li><a href="../../../notebooks/Introduction.html">Quickstart</a></li>
+                <li><a href="../../../notebooks/InferenceDataCookbook.html">Cookbook</a></li>
+                <li><a href="../../../api.html">API</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/Introduction.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/index.html">Example Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/InferenceDataCookbook.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about.html">About</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 content">
+      
+  <h1>Source code for arviz.stats.diagnostics</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Diagnostic functions for ArviZ.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">scipy.signal</span> <span class="k">import</span> <span class="n">fftconvolve</span>
+<span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
+
+<span class="kn">from</span> <span class="nn">..data</span> <span class="k">import</span> <span class="n">convert_to_dataset</span>
+<span class="kn">from</span> <span class="nn">..utils</span> <span class="k">import</span> <span class="n">_var_names</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;effective_n&quot;</span><span class="p">,</span> <span class="s2">&quot;gelman_rubin&quot;</span><span class="p">,</span> <span class="s2">&quot;geweke&quot;</span><span class="p">,</span> <span class="s2">&quot;autocorr&quot;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="effective_n"><a class="viewcode-back" href="../../../generated/arviz.effective_n.html#arviz.effective_n">[docs]</a><span class="k">def</span> <span class="nf">effective_n</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">var_names</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate estimate of the effective sample size.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data : obj</span>
+<span class="sd">        Any object that can be converted to an az.InferenceData object</span>
+<span class="sd">        Refer to documentation of az.convert_to_dataset for details</span>
+<span class="sd">        At least 2 posterior chains are needed to compute this diagnostic of one or more</span>
+<span class="sd">        stochastic parameters.</span>
+<span class="sd">    var_names : list</span>
+<span class="sd">      Names of variables to include in the effective_n report</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    n_eff : xarray.Dataset</span>
+<span class="sd">        Return the effective sample size, :math:`\hat{n}_{eff}`</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The diagnostic is computed by:</span>
+
+<span class="sd">    .. math:: \hat{n}_{eff} = \frac{mn}{1 + 2 \sum_{t=1}^T \hat{\rho}_t}</span>
+
+<span class="sd">    where :math:`\hat{\rho}_t` is the estimated _autocorrelation at lag t, and T</span>
+<span class="sd">    is the first odd positive integer for which the sum</span>
+<span class="sd">    :math:`\hat{\rho}_{T+1} + \hat{\rho}_{T+1}` is negative.</span>
+
+<span class="sd">    The current implementation is similar to Stan, which uses Geyer&#39;s initial monotone sequence</span>
+<span class="sd">    criterion (Geyer, 1992; Geyer, 2011).</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    Gelman et al. BDA (2014)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_get_neff</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="n">var_names</span> <span class="o">=</span> <span class="n">_var_names</span><span class="p">(</span><span class="n">var_names</span><span class="p">)</span>
+    <span class="n">dataset</span> <span class="o">=</span> <span class="n">convert_to_dataset</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="s2">&quot;posterior&quot;</span><span class="p">)</span>
+
+    <span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span> <span class="k">if</span> <span class="n">var_names</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">dataset</span><span class="p">[</span><span class="n">var_names</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">xr</span><span class="o">.</span><span class="n">apply_ufunc</span><span class="p">(</span><span class="n">_neff_ufunc</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">input_core_dims</span><span class="o">=</span><span class="p">((</span><span class="s2">&quot;chain&quot;</span><span class="p">,</span> <span class="s2">&quot;draw&quot;</span><span class="p">),))</span></div>
+
+
+<span class="k">def</span> <span class="nf">_neff_ufunc</span><span class="p">(</span><span class="n">ary</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Ufunc for computing effective sample size.</span>
+
+<span class="sd">    This can be used on an xarray Dataset, using</span>
+<span class="sd">    `xr.apply_ufunc(_neff_ufunc, ..., input_core_dims=((&#39;chain&#39;, &#39;draw&#39;),))</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">target</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">ary</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">ndindex</span><span class="p">(</span><span class="n">target</span><span class="o">.</span><span class="n">shape</span><span class="p">):</span>
+        <span class="n">target</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">_get_neff</span><span class="p">(</span><span class="n">ary</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">target</span>
+
+
+<span class="k">def</span> <span class="nf">_get_neff</span><span class="p">(</span><span class="n">sample_array</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Compute the effective sample size for a 2D array.&quot;&quot;&quot;</span>
+    <span class="n">shape</span> <span class="o">=</span> <span class="n">sample_array</span><span class="o">.</span><span class="n">shape</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Effective sample size calculation requires 2 dimensional arrays.&quot;</span><span class="p">)</span>
+    <span class="n">n_chain</span><span class="p">,</span> <span class="n">n_draws</span> <span class="o">=</span> <span class="n">shape</span>
+    <span class="k">if</span> <span class="n">n_chain</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Effective sample size calculation requires multiple chains.&quot;</span><span class="p">)</span>
+
+    <span class="n">acov</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">_autocov</span><span class="p">(</span><span class="n">sample_array</span><span class="p">[</span><span class="n">chain</span><span class="p">])</span> <span class="k">for</span> <span class="n">chain</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_chain</span><span class="p">)])</span>
+
+    <span class="n">chain_mean</span> <span class="o">=</span> <span class="n">sample_array</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">chain_var</span> <span class="o">=</span> <span class="n">acov</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">n_draws</span> <span class="o">/</span> <span class="p">(</span><span class="n">n_draws</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span>
+    <span class="n">acov_t</span> <span class="o">=</span> <span class="n">acov</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">n_draws</span> <span class="o">/</span> <span class="p">(</span><span class="n">n_draws</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span>
+    <span class="n">mean_var</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">chain_var</span><span class="p">)</span>
+    <span class="n">var_plus</span> <span class="o">=</span> <span class="n">mean_var</span> <span class="o">*</span> <span class="p">(</span><span class="n">n_draws</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">/</span> <span class="n">n_draws</span>
+    <span class="n">var_plus</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">chain_mean</span><span class="p">,</span> <span class="n">ddof</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">rho_hat_t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_draws</span><span class="p">)</span>
+    <span class="n">rho_hat_even</span> <span class="o">=</span> <span class="mf">1.0</span>
+    <span class="n">rho_hat_t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">rho_hat_even</span>
+    <span class="n">rho_hat_odd</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="p">(</span><span class="n">mean_var</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">acov_t</span><span class="p">))</span> <span class="o">/</span> <span class="n">var_plus</span>
+    <span class="n">rho_hat_t</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">rho_hat_odd</span>
+    <span class="c1"># Geyer&#39;s initial positive sequence</span>
+    <span class="n">max_t</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">while</span> <span class="n">t</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">n_draws</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">rho_hat_even</span> <span class="o">+</span> <span class="n">rho_hat_odd</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="n">rho_hat_even</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="p">(</span><span class="n">mean_var</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">acov</span><span class="p">[:,</span> <span class="n">t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]))</span> <span class="o">/</span> <span class="n">var_plus</span>
+        <span class="n">rho_hat_odd</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="p">(</span><span class="n">mean_var</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">acov</span><span class="p">[:,</span> <span class="n">t</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]))</span> <span class="o">/</span> <span class="n">var_plus</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">rho_hat_even</span> <span class="o">+</span> <span class="n">rho_hat_odd</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">rho_hat_t</span><span class="p">[</span><span class="n">t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">rho_hat_even</span>
+            <span class="n">rho_hat_t</span><span class="p">[</span><span class="n">t</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">rho_hat_odd</span>
+        <span class="n">max_t</span> <span class="o">=</span> <span class="n">t</span> <span class="o">+</span> <span class="mi">2</span>
+        <span class="n">t</span> <span class="o">+=</span> <span class="mi">2</span>
+
+    <span class="c1"># Geyer&#39;s initial monotone sequence</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="k">while</span> <span class="n">t</span> <span class="o">&lt;=</span> <span class="n">max_t</span> <span class="o">-</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">rho_hat_t</span><span class="p">[</span><span class="n">t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">rho_hat_t</span><span class="p">[</span><span class="n">t</span> <span class="o">+</span> <span class="mi">2</span><span class="p">])</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">rho_hat_t</span><span class="p">[</span><span class="n">t</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">rho_hat_t</span><span class="p">[</span><span class="n">t</span><span class="p">]):</span>
+            <span class="n">rho_hat_t</span><span class="p">[</span><span class="n">t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">rho_hat_t</span><span class="p">[</span><span class="n">t</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">rho_hat_t</span><span class="p">[</span><span class="n">t</span><span class="p">])</span> <span class="o">/</span> <span class="mf">2.0</span>
+            <span class="n">rho_hat_t</span><span class="p">[</span><span class="n">t</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">rho_hat_t</span><span class="p">[</span><span class="n">t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">t</span> <span class="o">+=</span> <span class="mi">2</span>
+    <span class="n">ess</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">n_chain</span> <span class="o">*</span> <span class="n">n_draws</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="o">-</span><span class="mf">1.0</span> <span class="o">+</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">rho_hat_t</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="n">ess</span>
+
+
+<span class="k">def</span> <span class="nf">autocorr</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Compute autocorrelation using FFT for every lag for the input array.</span>
+
+<span class="sd">    See https://en.wikipedia.org/wiki/autocorrelation#Efficient_computation</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : Numpy array</span>
+<span class="sd">        An array containing MCMC samples</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    acorr: Numpy array same size as the input array</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">x</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+    <span class="n">len_y</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">fftconvolve</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">y</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">acorr</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span> <span class="p">:]</span>
+    <span class="n">acorr</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">len_y</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">acorr</span> <span class="o">/=</span> <span class="n">acorr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">acorr</span>
+
+
+<span class="k">def</span> <span class="nf">_autocov</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Compute autocovariance estimates for every lag for the input array.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : Numpy array</span>
+<span class="sd">        An array containing MCMC samples</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    acov: Numpy array same size as the input array</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">acorr</span> <span class="o">=</span> <span class="n">autocorr</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">varx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ddof</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">acov</span> <span class="o">=</span> <span class="n">acorr</span> <span class="o">*</span> <span class="n">varx</span>
+    <span class="k">return</span> <span class="n">acov</span>
+
+
+<div class="viewcode-block" id="gelman_rubin"><a class="viewcode-back" href="../../../generated/arviz.gelman_rubin.html#arviz.gelman_rubin">[docs]</a><span class="k">def</span> <span class="nf">gelman_rubin</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">var_names</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Compute estimate of R-hat for a set of traces.</span>
+
+<span class="sd">    The Gelman-Rubin diagnostic tests for lack of convergence by comparing the variance between</span>
+<span class="sd">    multiple chains to the variance within each chain. If convergence has been achieved, the</span>
+<span class="sd">    between-chain and within-chain variances should be identical. To be most effective in</span>
+<span class="sd">    detecting evidence for nonconvergence, each chain should have been initialized to starting</span>
+<span class="sd">    values that are dispersed relative to the target distribution.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data : obj</span>
+<span class="sd">        Any object that can be converted to an az.InferenceData object</span>
+<span class="sd">        Refer to documentation of az.convert_to_dataset for details</span>
+<span class="sd">        At least 2 posterior chains are needed to compute this diagnostic of one or more</span>
+<span class="sd">        stochastic parameters.</span>
+<span class="sd">    var_names : list</span>
+<span class="sd">      Names of variables to include in the rhat report</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    r_hat : xarray.Dataset</span>
+<span class="sd">      Returns dictionary of the potential scale reduction factors, :math:`\hat{R}`</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The diagnostic is computed by:</span>
+
+<span class="sd">      .. math:: \hat{R} = \frac{\hat{V}}{W}</span>
+
+<span class="sd">    where :math:`W` is the within-chain variance and :math:`\hat{V}` is the posterior variance</span>
+<span class="sd">    estimate for the pooled traces. This is the potential scale reduction factor, which converges</span>
+<span class="sd">    to unity when each of the traces is a sample from the target posterior. Values greater than one</span>
+<span class="sd">    indicate that one or more chains have not yet converged.</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    Brooks and Gelman (1998)</span>
+<span class="sd">    Gelman and Rubin (1992)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_get_rhat</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">var_names</span> <span class="o">=</span> <span class="n">_var_names</span><span class="p">(</span><span class="n">var_names</span><span class="p">)</span>
+    <span class="n">dataset</span> <span class="o">=</span> <span class="n">convert_to_dataset</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="s2">&quot;posterior&quot;</span><span class="p">)</span>
+
+    <span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span> <span class="k">if</span> <span class="n">var_names</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">dataset</span><span class="p">[</span><span class="n">var_names</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">xr</span><span class="o">.</span><span class="n">apply_ufunc</span><span class="p">(</span><span class="n">_rhat_ufunc</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">input_core_dims</span><span class="o">=</span><span class="p">((</span><span class="s2">&quot;chain&quot;</span><span class="p">,</span> <span class="s2">&quot;draw&quot;</span><span class="p">),))</span></div>
+
+
+<span class="k">def</span> <span class="nf">_rhat_ufunc</span><span class="p">(</span><span class="n">ary</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Ufunc for computing effective sample size.</span>
+
+<span class="sd">    This can be used on an xarray Dataset, using</span>
+<span class="sd">    `xr.apply_ufunc(_neff_ufunc, ..., input_core_dims=((&#39;chain&#39;, &#39;draw&#39;),))</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">target</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">ary</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">ndindex</span><span class="p">(</span><span class="n">target</span><span class="o">.</span><span class="n">shape</span><span class="p">):</span>
+        <span class="n">target</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">_get_rhat</span><span class="p">(</span><span class="n">ary</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">target</span>
+
+
+<span class="k">def</span> <span class="nf">_get_rhat</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">round_to</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Compute the rhat for a 2d array.&quot;&quot;&quot;</span>
+    <span class="n">shape</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">shape</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Effective sample size calculation requires 2 dimensional arrays.&quot;</span><span class="p">)</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">num_samples</span> <span class="o">=</span> <span class="n">shape</span>
+
+    <span class="c1"># Calculate between-chain variance</span>
+    <span class="n">between_chain_variance</span> <span class="o">=</span> <span class="n">num_samples</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ddof</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="c1"># Calculate within-chain variance</span>
+    <span class="n">within_chain_variance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ddof</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="c1"># Estimate of marginal posterior variance</span>
+    <span class="n">v_hat</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">within_chain_variance</span> <span class="o">*</span> <span class="p">(</span><span class="n">num_samples</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">num_samples</span>
+        <span class="o">+</span> <span class="n">between_chain_variance</span> <span class="o">/</span> <span class="n">num_samples</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="nb">round</span><span class="p">((</span><span class="n">v_hat</span> <span class="o">/</span> <span class="n">within_chain_variance</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">round_to</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="geweke"><a class="viewcode-back" href="../../../generated/arviz.geweke.html#arviz.geweke">[docs]</a><span class="k">def</span> <span class="nf">geweke</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">first</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">intervals</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Compute z-scores for convergence diagnostics.</span>
+
+<span class="sd">    Compare the mean of the first % of series with the mean of the last % of series. x is divided</span>
+<span class="sd">    into a number of segments for which this difference is computed. If the series is converged,</span>
+<span class="sd">    this score should oscillate between -1 and 1.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    values : 1D array-like</span>
+<span class="sd">      The trace of some stochastic parameter.</span>
+<span class="sd">    first : float</span>
+<span class="sd">      The fraction of series at the beginning of the trace.</span>
+<span class="sd">    last : float</span>
+<span class="sd">      The fraction of series at the end to be compared with the section</span>
+<span class="sd">      at the beginning.</span>
+<span class="sd">    intervals : int</span>
+<span class="sd">      The number of segments.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    scores : list [[]]</span>
+<span class="sd">      Return a list of [i, score], where i is the starting index for each interval and score the</span>
+<span class="sd">      Geweke score on the interval.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The Geweke score on some series x is computed by:</span>
+
+<span class="sd">      .. math:: \frac{E[x_s] - E[x_e]}{\sqrt{V[x_s] + V[x_e]}}</span>
+
+<span class="sd">    where :math:`E` stands for the mean, :math:`V` the variance,</span>
+<span class="sd">    :math:`x_s` a section at the start of the series and</span>
+<span class="sd">    :math:`x_e` a section at the end of the series.</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    Geweke (1992)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Filter out invalid intervals</span>
+    <span class="k">for</span> <span class="n">interval</span> <span class="ow">in</span> <span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">last</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">interval</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">interval</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid intervals for Geweke convergence analysis&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">last</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">first</span> <span class="o">+</span> <span class="n">last</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid intervals for Geweke convergence analysis&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">last</span><span class="p">))</span>
+
+    <span class="c1"># Initialize list of z-scores</span>
+    <span class="n">zscores</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># Last index value</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+
+    <span class="c1"># Start intervals going up to the &lt;last&gt;% of the chain</span>
+    <span class="n">last_start_idx</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">last</span><span class="p">)</span> <span class="o">*</span> <span class="n">end</span>
+
+    <span class="c1"># Calculate starting indices</span>
+    <span class="n">start_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">last_start_idx</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="n">intervals</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+
+    <span class="c1"># Loop over start indices</span>
+    <span class="k">for</span> <span class="n">start</span> <span class="ow">in</span> <span class="n">start_indices</span><span class="p">:</span>
+        <span class="c1"># Calculate slices</span>
+        <span class="n">first_slice</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="n">start</span> <span class="p">:</span> <span class="n">start</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="n">first</span> <span class="o">*</span> <span class="p">(</span><span class="n">end</span> <span class="o">-</span> <span class="n">start</span><span class="p">))]</span>
+        <span class="n">last_slice</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">end</span> <span class="o">-</span> <span class="n">last</span> <span class="o">*</span> <span class="p">(</span><span class="n">end</span> <span class="o">-</span> <span class="n">start</span><span class="p">))</span> <span class="p">:]</span>
+
+        <span class="n">z_score</span> <span class="o">=</span> <span class="n">first_slice</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">-</span> <span class="n">last_slice</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+        <span class="n">z_score</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">first_slice</span><span class="o">.</span><span class="n">var</span><span class="p">()</span> <span class="o">+</span> <span class="n">last_slice</span><span class="o">.</span><span class="n">var</span><span class="p">())</span>
+
+        <span class="n">zscores</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">start</span><span class="p">,</span> <span class="n">z_score</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="n">intervals</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">zscores</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">zscores</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">ks_summary</span><span class="p">(</span><span class="n">pareto_tail_indices</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Display a summary of Pareto tail indices.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    pareto_tail_indices : array</span>
+<span class="sd">      Pareto tail indices.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    df_k : dataframe</span>
+<span class="sd">      Dataframe containing k diagnostic values.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kcounts</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">pareto_tail_indices</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">Inf</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">Inf</span><span class="p">])</span>
+    <span class="n">kprop</span> <span class="o">=</span> <span class="n">kcounts</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">pareto_tail_indices</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
+    <span class="n">df_k</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+        <span class="nb">dict</span><span class="p">(</span><span class="n">_</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;(good)&quot;</span><span class="p">,</span> <span class="s2">&quot;(ok)&quot;</span><span class="p">,</span> <span class="s2">&quot;(bad)&quot;</span><span class="p">,</span> <span class="s2">&quot;(very bad)&quot;</span><span class="p">],</span> <span class="n">Count</span><span class="o">=</span><span class="n">kcounts</span><span class="p">,</span> <span class="n">Pct</span><span class="o">=</span><span class="n">kprop</span><span class="p">)</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;(-Inf, 0.5]&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot; (0.5, 0.7]&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="s2">&quot;   (0.7, 1]&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span> <span class="s2">&quot;   (1, Inf)&quot;</span><span class="p">})</span>
+
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">kcounts</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;All Pareto k estimates are good (k &lt; 0.5)&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">kcounts</span><span class="p">[</span><span class="mi">2</span><span class="p">:])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;All Pareto k estimates are ok (k &lt; 0.7)&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">df_k</span>
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+      
+    </p>
+    <p>
+        &copy; Copyright 2018, ArviZ devs.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.1.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

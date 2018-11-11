@@ -1,0 +1,15 @@
+
+.. _plot_density:
+
+
+Density Plot
+============
+
+
+
+.. image:: _images/plot_density.png
+
+**Python source code:** :download:`[download source: plot_density.py]<plot_density.py>`
+
+.. literalinclude:: plot_density.py
+    :lines: 7-

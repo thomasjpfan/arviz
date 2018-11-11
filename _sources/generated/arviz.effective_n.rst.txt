@@ -1,0 +1,6 @@
+arviz.effective\_n
+==================
+
+.. currentmodule:: arviz
+
+.. autofunction:: effective_n

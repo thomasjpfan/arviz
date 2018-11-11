@@ -1,0 +1,15 @@
+
+.. _plot_violin:
+
+
+Violinplot
+==========
+
+
+
+.. image:: _images/plot_violin.png
+
+**Python source code:** :download:`[download source: plot_violin.py]<plot_violin.py>`
+
+.. literalinclude:: plot_violin.py
+    :lines: 7-
