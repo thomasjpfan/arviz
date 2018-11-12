@@ -77,7 +77,7 @@ def emcee_linear_model(data, draws, chains):
     return sampler
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="module")
 def eight_schools_params():
     """Share setup for eight schools."""
     return {

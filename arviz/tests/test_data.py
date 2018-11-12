@@ -344,7 +344,8 @@ class TestPyStanNetCDFUtils:
 
         return Data
 
-    def get_inference_data(self, data, eight_school_params):
+    @pytest.fixture(scope="class")
+    def inference_data(self, data, eight_schools_params):
         """vars as str."""
         return from_pystan(
             posterior=data.obj,
@@ -353,7 +354,7 @@ class TestPyStanNetCDFUtils:
             prior_predictive="y_hat",
             observed_data="y",
             log_likelihood="log_lik",
-            coords={"school": np.arange(eight_school_params["J"])},
+            coords={"school": np.arange(eight_schools_params["J"])},
             dims={
                 "theta": ["school"],
                 "y": ["school"],
@@ -363,7 +364,8 @@ class TestPyStanNetCDFUtils:
             },
         )
 
-    def get_inference_data2(self, data, eight_schools_params):
+    @pytest.fixture(scope="class")
+    def inference_data2(self, data, eight_schools_params):
         """vars as lists."""
         return from_pystan(
             posterior=data.obj,
@@ -385,7 +387,8 @@ class TestPyStanNetCDFUtils:
             },
         )
 
-    def get_inference_data3(self, data, eight_schools_params):
+    @pytest.fixture(scope="class")
+    def inference_data3(self, data, eight_schools_params):
         """multiple vars as lists."""
         return from_pystan(
             posterior=data.obj,
@@ -402,7 +405,8 @@ class TestPyStanNetCDFUtils:
             },
         )
 
-    def get_inference_data4(self, data):
+    @pytest.fixture(scope="class")
+    def inference_data4(self, data):
         """multiple vars as lists."""
         return from_pystan(
             posterior=data.obj,
@@ -414,31 +418,48 @@ class TestPyStanNetCDFUtils:
             dims=None,
         )
 
-    def test_sampler_stats(self, data, eight_schools_params):
-        inference_data = self.get_inference_data(data, eight_schools_params)
+    def test_sampler_stats(self, inference_data):
         assert hasattr(inference_data, "sample_stats")
 
-    def test_inference_data(self, data, eight_schools_params):
-        inference_data1 = self.get_inference_data(data, eight_schools_params)
-        inference_data2 = self.get_inference_data2(data, eight_schools_params)
-        inference_data3 = self.get_inference_data3(data, eight_schools_params)
-        inference_data4 = self.get_inference_data4(data)
-        assert hasattr(inference_data1.sample_stats, "log_likelihood")
-        assert hasattr(inference_data1.posterior, "theta")
-        assert hasattr(inference_data1.prior, "theta")
-        assert hasattr(inference_data1.observed_data, "y")
-        assert hasattr(inference_data2.posterior_predictive, "y_hat")
-        assert hasattr(inference_data2.prior_predictive, "y_hat")
-        assert hasattr(inference_data2.sample_stats, "lp")
-        assert hasattr(inference_data2.sample_stats_prior, "lp")
-        assert hasattr(inference_data2.observed_data, "y")
-        assert hasattr(inference_data3.posterior_predictive, "y_hat")
-        assert hasattr(inference_data3.prior_predictive, "y_hat")
-        assert hasattr(inference_data3.sample_stats, "lp")
-        assert hasattr(inference_data3.sample_stats_prior, "lp")
-        assert hasattr(inference_data3.observed_data, "y")
-        assert hasattr(inference_data4.posterior, "theta")
-        assert hasattr(inference_data4.prior, "theta")
+    def assert_inference_data_has_param(self, inference_data, param, attr):
+        assert hasattr(inference_data, param)
+        assert hasattr(getattr(inference_data, param), attr)
+
+    @pytest.mark.parametrize("param, attr", [
+        ("sample_stats", "log_likelihood"),
+        ("posterior", "theta"),
+        ("prior", "theta"),
+        ("observed_data", "y")
+    ])
+    def test_inference_data1(self, inference_data, param, attr):
+        self.assert_inference_data_has_param(inference_data, param, attr)
+
+    @pytest.mark.parametrize("param, attr", [
+        ("posterior_predictive", "y_hat"),
+        ("prior_predictive", "y_hat"),
+        ("sample_stats", "lp"),
+        ("sample_stats_prior", "lp"),
+        ("observed_data", "y")
+    ])
+    def test_inference_data2(self, inference_data2, param, attr):
+        self.assert_inference_data_has_param(inference_data2, param, attr)
+
+    @pytest.mark.parametrize("param, attr", [
+        ("posterior_predictive", "y_hat"),
+        ("prior_predictive", "y_hat"),
+        ("sample_stats", "lp"),
+        ("sample_stats_prior", "lp"),
+        ("observed_data", "y")
+    ])
+    def test_inference_data3(self, inference_data3, param, attr):
+        self.assert_inference_data_has_param(inference_data3, param, attr)
+
+    @pytest.mark.parametrize("param, attr", [
+        ("posterior", "theta"),
+        ("prior", "theta")
+    ])
+    def test_inference_data4(self, inference_data4, param, attr):
+        self.assert_inference_data_has_param(inference_data4, param, attr)
 
 
 class TestCmdStanNetCDFUtils:
